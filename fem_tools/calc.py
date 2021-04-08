@@ -351,7 +351,7 @@ class FEMComput:
             print(comment)
 
         # Записываем результаты в файл
-        self.display_results(self)
+        self.display_results()
 
         # Закрываем файл
         file.close()
