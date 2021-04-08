@@ -323,16 +323,8 @@ class FEMComput:
             # Выводим описание элемента
             print(review)
 
-    def save_results(self, file_name, comment=''):
-        """Сохраняем результаты вычислений в файл"""
-        # Открываем файл на запись
-        file = open(file_name, 'w', encoding='utf8')
-        # Переопределяем стандартный вывод
-        sys.stdout = file
-        # Выводи комментарий к результатам, если он существует
-        if comment:
-            print(comment)
-
+    def display_results(self):
+        """Выводим результаты на экран"""
         # Выводим матричное уравнение
         self.show_equation("Уравнение в матричном виде")
         # Введём граничные условия методом Пиана-Айронса
@@ -347,6 +339,19 @@ class FEMComput:
         self.show_all_aprox_u()
         # Выведем апроксимации усилий для всех элементов
         self.show_all_aprox_force()
+
+    def save_results(self, file_name, comment=''):
+        """Сохраняем результаты вычислений в файл"""
+        # Открываем файл на запись
+        file = open(file_name, 'w', encoding='utf8')
+        # Переопределяем стандартный вывод
+        sys.stdout = file
+        # Выводи комментарий к результатам, если он существует
+        if comment:
+            print(comment)
+
+        # Записываем результаты в файл
+        self.display_results(self)
 
         # Закрываем файл
         file.close()
