@@ -307,7 +307,7 @@ class Beam(FEMStructure):
                 N1 = self.nodes.index(el.node1)
                 N2 = self.nodes.index(el.node2)
                 # Проходим все распределённые нагрузки на текущем элементе
-                for q1, q2 in range(len(el.q)):
+                for q1, q2 in el.q:
                     # Распределённые нагрузки заменяем на точечные, приложенные
                     # К узлам элеммента
                     # Вычисляем нагрузки в начале элемента
@@ -316,8 +316,8 @@ class Beam(FEMStructure):
                     f2 = (el.L/2)*(q1*1/3 + q2*2/3)
 
                     # Добавляем получаенные усилия к вектору усилий
-                    vector[N1] = f1
-                    vector[N2] = f2
+                    vector[N1] += f1
+                    vector[N2] += f2
 
         # Возвращаем вектор известных узловых сил
         return vector
@@ -442,7 +442,7 @@ class Beam(FEMStructure):
                     # Поднимаем флаг - говорим что распределённая нагрузка есть
                     is_have = True
                 # Выводим индекс элемента и нагрузки в его начале и в конце
-                print(f'{i} {q1:.3f} {q2:.3f}')
+                print(f'\t{i} {q1:.3f} {q2:.3f}')
 
         # Закрываем файл
         file.close()
