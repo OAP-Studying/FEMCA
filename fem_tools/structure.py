@@ -95,15 +95,19 @@ class OneNode(Node):
     """Одномерный узел"""
     # Содержит координату своего расположения
     x: float = 0
+    # Позиция узла в массиве вершин
+    pos: int = field(init=False, default=None)
 
 
 @dataclass
 class OneFE(FiniteElement):
     """Одномерный конечный элемент"""
     # Глобальный номер начального узла - локального 1-го
-    node1: OneNode = field(init=False)
+    node1: OneNode = field(init=False, default=None)
     # Глобальный номер конечного узла
-    node2: OneNode = field(init=False)
+    node2: OneNode = field(init=False, default=None)
+    # Позиция элемента в массиве элементов
+    pos: int = field(init=False, default=None)
 
     # Распределённые нагрузки на элементе
     q: List[List[float]] = field(default_factory=list)
@@ -167,6 +171,8 @@ class Beam(FEMStructure):
         """
         # Добавляем КЭ в массив элементов конструкции
         self.elements.append(el)
+        # Сохраняем позицию элемента
+        el.pos = self.cnt_elements - 1
 
         # Если не указали начальный узел
         if not n1:
@@ -178,6 +184,8 @@ class Beam(FEMStructure):
                 n1 = OneNode(x=0)
                 # Добавляем узел в массив узлов конструкции
                 self.nodes.append(n1)
+                # Сохраняем позицию узла
+                n1.pos = self.cnt_nodes - 1
             else:
                 # 2-ой в конструкции уже есть элементы
                 # Тогда надо вызвать ошибку, что забыли указать узел
@@ -199,6 +207,8 @@ class Beam(FEMStructure):
                 n2 = OneNode(x=n1.x + L)
                 # Добавляем узел в массив узлов конструкции
                 self.nodes.append(n2)
+                # Сохраняем позицию узла
+                n2.pos = self.cnt_nodes - 1
 
         # Здесь уже точно n2
         # тогда назначаем новый узел КОНЕЧНЫМ узлом элемента
@@ -276,8 +286,8 @@ class Beam(FEMStructure):
         # Обходим все конечные элементы конструкции
         for el in self.elements:
             # Получаем значения его узлов
-            N1 = self.nodes.index(el.node1)
-            N2 = self.nodes.index(el.node2)
+            N1 = el.node1.pos
+            N2 = el.node2.pos
             # Добавляем элементы матрицы жёсткости к глобальной
             matrix[N1][N1] += el.K[0][0]
             matrix[N1][N2] += el.K[0][1]
@@ -304,8 +314,8 @@ class Beam(FEMStructure):
             # Проверяем приложены ли они в текущем элементе
             if el.q:
                 # Если они приложены находим индексы узлов элемента
-                N1 = self.nodes.index(el.node1)
-                N2 = self.nodes.index(el.node2)
+                N1 = el.node1.pos
+                N2 = el.node2.pos
                 # Проходим все распределённые нагрузки на текущем элементе
                 for q1, q2 in el.q:
                     # Распределённые нагрузки заменяем на точечные, приложенные
@@ -380,8 +390,8 @@ class Beam(FEMStructure):
         # Проходим все конечные элементы
         for i, el in enumerate(self.elements):
             # Получаем индексы улов текущего элемента
-            N1 = self.nodes.index(el.node1)
-            N2 = self.nodes.index(el.node2)
+            N1 = el.node1.pos
+            N2 = el.node2.pos
             # В зависимости от вида КЭ у него могут быть разные параметры
             # Только C в случае пружинки и EF в случае стержня
             # Строка параметров элемента
@@ -504,6 +514,8 @@ class Beam(FEMStructure):
         for i, x in sorted(nodes):
             # Создаём новый узел
             n = OneNode(x=x)
+            # Сохраняем позицию узла
+            n.pos = i
             # Вставляем узел в массив узлов
             # В позицию i
             self.nodes.insert(i, n)
