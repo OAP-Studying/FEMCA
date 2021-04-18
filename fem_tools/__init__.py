@@ -3,7 +3,7 @@
 fem_tools - пакет предоставляющий полезные функции и классы
 для метода конечных элементов (МКЭ)
 """
-from . import structure
-from . import calc
+from .structure import Beam
+from .calc import FEMComput
 
-__all__ = ['calc', 'structure']
+__all__ = ['Beam', 'FEMComput']

@@ -12,8 +12,8 @@ main_dir = Path(__file__).resolve().parent.parent
 sys.path.append(str(main_dir))
 
 
-from fem_tools.calc import FEMComput
-from fem_tools.structure import Beam
+from fem_tools import Beam
+from fem_tools import FEMComput
 
 # Имя модели
 name_model = 'model3'

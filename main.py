@@ -7,8 +7,8 @@ main - главный модуль приложения
 """
 import sys
 import os
-from fem_tools.structure import Beam
-from fem_tools.calc import FEMComput
+from fem_tools import Beam
+from fem_tools import FEMComput
 
 
 def solve(file_model):
