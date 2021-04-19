@@ -43,33 +43,34 @@ def main():
     # Заготовка - пустая конструкция
     beam = Beam()
     # Собираем конструкцию, добавляем пружинку
-    node1 = beam.add_spring(C=2*C, L=L)
+    spring1 = beam.add_spring(C=2*C, L=L)
     # Дальше наращиваем стержень
-    node2 = beam.add_rod(E=E, F=F, n1=node1, L=L)
+    rod1 = beam.add_rod(E=E, F=F, n1=spring1.node2, L=L)
     # Еще один
-    node3 = beam.add_rod(E=E, F=F, n1=node2, L=L)
+    rod2 = beam.add_rod(E=E, F=F, n1=rod1.node2, L=L)
     # 3-ий стержень
-    node4 = beam.add_rod(E=E, F=F, n1=node3, L=L)
+    rod3 = beam.add_rod(E=E, F=F, n1=rod2.node2, L=L)
     # В конце добавляем пружинку
-    node5 = node1 = beam.add_spring(C=C, n1=node4, L=L)
+    spring2 = beam.add_spring(C=C, n1=rod3.node2, L=L)
 
     # Добавляем закрепление конструкции
     # Получаем нулевой узел конструкции
-    node0 = beam.nodes[0]
-    # добавляем к нему закрепление
-    beam.add_pinning(node0)
-    # К последнему узлу: 5-ому
-    beam.add_pinning(node5)
+    # В левом узле пружинки 1
+    beam.add_pinning(spring1.node1)
+    # К последнему узлу - правому пружинки 2
+    spring2.node2.add_pinning()
 
     # Добавляем точечные усилия к конструкции
-    # Прикладываем в 2-ом узле силу F1
-    beam.add_point_force(node2, -F1)
+    # Прикладываем в 2-ом узле - правом узле стержня rod1 силу F1
+    beam.add_point_force(rod1.node2, -F1)
+    # или
+    # rod1.node2.add_point_force(-F1)
 
     # Добавляем распределённые усилия
-    # Получаем второй элемент конструкции
-    el = beam.elements[2]
-    # К этому элементу добавляем треугольную распределённую нагрузку
-    beam.add_linear_distributed_force(el, q1=0, q2=q2)
+    # К стержню 2 добавляем треугольную распределённую нагрузку
+    beam.add_linear_distributed_force(rod2, q1=0, q2=q2)
+    # или
+    # rod2.add_linear_distributed_force(q1=0, q2=q2)
 
     # Начинаем расчёты
     # Отдельный объект для расчёта конструкции

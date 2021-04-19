@@ -43,27 +43,25 @@ def main():
     # Заготовка - пустая конструкция
     beam = Beam()
     # Добавляем первый стержень
-    node1 = beam.add_rod(E=E, F=F, L=L)
-    # К первому ущлу добавляем следующую часть
-    node2 = beam.add_rod(E=E, F=F, n1=node1, L=L)
-    # Ко второму узлу добавяем последний стержень
-    node3 = beam.add_rod(E=E, F=F, n1=node2, L=L)
-    # К первому узлу добавляем пружинку, длина в противополоную сторону
-    node4 = beam.add_spring(C=C, n1=node1, L=-L)
+    rod1 = beam.add_rod(E=E, F=F, L=L)
+    # К правому узлу стержня rod1 добавляем еще один элемент стержень
+    rod2 = beam.add_rod(E=E, F=F, n1=rod1.node2, L=L)
+    # К правому узлу стержня rod1 добавляем последний стержень
+    rod3 = beam.add_rod(E=E, F=F, n1=rod2.node2, L=L)
+    # К правому узлу стержня rod1 добавляем пружинку, длина в противополоную сторону
+    spring1 = beam.add_spring(C=C, n1=rod1.node2, L=-L)
 
     # Добавляем закрепление конструкции
-    # К полседнему узлу
-    beam.add_pinning(node4)
-    # к третьему узлу
-    beam.add_pinning(node3)
+    # К полседнему узлу - узлу node2 пружинки
+    beam.add_pinning(spring1.node2)
+    # к третьему узлу - правому узлу стержня rod3
+    rod3.node2.add_pinning()
 
     # Добавляем усилия к конструкции
-    # Получаем нулевой узел конструкции
-    node0 = beam.nodes[0]
-    # Прикладываем в нём точечную силу F1
-    beam.add_point_force(node0, F1)
-    # Во втором узле добавляем точечнуб силу F2
-    beam.add_point_force(node2, F2)
+    # В левом узле стержня rod1 точечную силу F1
+    beam.add_point_force(rod1.node1, F1)
+    # В правом узле стержня rod2 точечную силу F2
+    rod2.node2.add_point_force(F2)
 
     # Начинаем расчёты
     # Отдельный объект для расчёта конструкции

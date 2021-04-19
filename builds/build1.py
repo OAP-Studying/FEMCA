@@ -42,28 +42,26 @@ def main():
     # Начинаем построения
     # Заготовка - пустая конструкция
     beam = Beam()
-    # Добавляем первый стержень
-    node1 = beam.add_rod(E=E, F=F, L=L)
-    # К первому ущлу добавляем следующую часть
-    node2 = beam.add_rod(E=E, F=F, n1=node1, L=L)
-    # Ко второму узлу добавяем последний стержень
-    node3 = beam.add_rod(E=E, F=F, n1=node2, L=L)
-    # Ко второму узлу добавляем пружинку
-    node4 = beam.add_spring(C=C, n1=node2, L=L)
+    # Добавляем первый стержень к конструкции
+    rod1 = beam.add_rod(E=E, F=F, L=L)
+    # К правому узлу стержня rod1 добавляем еще один элемент стержень
+    rod2 = beam.add_rod(E=E, F=F, n1=rod1.node2, L=L)
+    # К правому узлу стержня rod2 добавляем еще один элемент стержень
+    rod3 = beam.add_rod(E=E, F=F, n1=rod2.node2, L=L)
+    # К правому узлу стержня rod2 добавляем пружинку
+    spring1 = beam.add_spring(C=C, n1=rod2.node2, L=L)
 
     # Добавляем закрепление конструкции
-    # Получаем нулевой узел конструкции
-    node0 = beam.nodes[0]
-    # добавляем к нему закрепление
-    beam.add_pinning(node0)
-    # К последнему узлу: 4-ому
-    beam.add_pinning(node4)
+    # К левому узлу стержня rod1
+    beam.add_pinning(rod1.node1)
+    # К правому узлу пружинки
+    spring1.node2.add_pinning()
 
     # Добавляем усилия к конструкции
-    # Прикладываем в 1-ом узле силу F1
-    beam.add_point_force(node1, -F1)
-    # В третьем узле добавляем точечну силу F2
-    beam.add_point_force(node3, F2)
+    # Прикладываем в правом узле стержня rod1 силу F1
+    beam.add_point_force(rod1.node2, -F1)
+    # в правом узле стержня rod3 добавляем точечну силу F2
+    rod3.node2.add_point_force(F2)
 
     # Начинаем расчёты
     # Отдельный объект для расчёта конструкции

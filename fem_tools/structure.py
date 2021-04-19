@@ -15,6 +15,7 @@ class FiniteElement(ABC):
     # Самое базовое свойтсво, которым должны обладать КЭ - это матрица жёсткости
     # Умышленно здесь не указали нагрузки в узлах и количество узлов и тп
     # Так как элемент может быть не одномерным в будущем
+
     @abstractproperty
     @property
     def K(self):
@@ -33,10 +34,11 @@ class FiniteElement(ABC):
 @dataclass
 class Node(ABC):
     """Класс одного узла в системе"""
-    # массив сил приложенных в данном узле
-    forces: List[float] = field(default_factory=list)
-    # перемещение в данном узле
-    u: float = None
+
+    @abstractmethod
+    def add_point_force(self):
+        """Добавить точечную нагрузку к конструкции"""
+        pass
 
 
 @dataclass
@@ -79,24 +81,30 @@ class FEMStructure(FiniteElement):
         """Добавить конечный элемент к конструкции"""
         pass
 
-    @abstractmethod
-    def add_point_force(self):
-        """Добавить точечную нагрузку к конструкции"""
-        pass
-
-    @abstractmethod
-    def add_linear_distributed_force(self):
-        """Добавить распределённую силу - нагрузку"""
-        pass
-
 
 @dataclass
 class OneNode(Node):
     """Одномерный узел"""
     # Содержит координату своего расположения
     x: float = 0
+    # перемещение в данном узле
+    u: float = field(init=False, default=None)
+    # массив сил приложенных в данном узле
+    forces: List[float] = field(default_factory=list)
     # Позиция узла в массиве вершин
     pos: int = field(init=False, default=None)
+
+    def add_point_force(self, value=1):
+        """
+        Добавить точечную силу - нагрузку
+        Принимает:
+          value  : значение нагрузки
+        """
+        self.forces.append(value)
+
+    def add_pinning(self):
+        """Добавить закрепление"""
+        self.u = 0
 
 
 @dataclass
@@ -108,7 +116,6 @@ class OneFE(FiniteElement):
     node2: OneNode = field(init=False, default=None)
     # Позиция элемента в массиве элементов
     pos: int = field(init=False, default=None)
-
     # Распределённые нагрузки на элементе
     q: List[List[float]] = field(default_factory=list)
 
@@ -122,6 +129,15 @@ class OneFE(FiniteElement):
     def L(self, value):
         """Менять длину элемента нельзя"""
         raise Exception("Попытка изменить длину КЭ")
+
+    def add_linear_distributed_force(self, q1=1, q2=1):
+        """
+        Добавить распределённую силу - нагрузку
+        Принимает:
+          q1 : нагрузка в начале элемента
+          q2 : нагрузка в конце элемента
+        """
+        self.q.append([q1, q2])
 
 
 @dataclass
@@ -229,7 +245,7 @@ class Beam(FEMStructure):
         self.add_fen_el(rod, n1, n2, L)
 
         # Возвращаем последний узел
-        return rod.node2
+        return rod
 
     def add_spring(self, C, n1: OneNode = None, n2: OneNode = None, L=None):
         """
@@ -245,7 +261,7 @@ class Beam(FEMStructure):
         self.add_fen_el(spring, n1, n2, L)
 
         # Возвращаем последний узел
-        return spring.node2
+        return spring
 
     def add_point_force(self, node: OneNode, value=1):
         """
@@ -254,24 +270,24 @@ class Beam(FEMStructure):
           node   :
           value  : значение нагрузки
         """
-        node.forces.append(value)
+        node.add_point_force(value)
 
     def add_linear_distributed_force(self, el: OneFE, q1=1, q2=1):
         """
         Добавить распределённую силу - нагрузку
         Принимает:
-          node  :  Кэ
+          el  :  КЭ
           q1 : нагрузка в начале элемента
           q2 : нагрузка в конце элемента
         """
-        el.q.append([q1, q2])
+        el.add_linear_distributed_force(q1, q2)
 
     def add_pinning(self, node: OneNode):
         """
         Добавить закрепление
         node : объект вершины
         """
-        node.u = 0
+        node.add_pinning()
 
     @property
     def K(self):
