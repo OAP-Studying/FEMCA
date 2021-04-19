@@ -7,16 +7,14 @@ main - главный модуль приложения
 """
 import sys
 import os
-from fem_tools import Beam
 from fem_tools import FEMComput
+from fem_tools import load_model
 
 
 def solve(file_model):
     """Решить модель из файла"""
-    # Заготовка - пустая конструкция
-    beam = Beam()
     # Загружаем модель конструкции из файла
-    beam.load(file_model)
+    beam = load_model(file_model)
     # Отдельный объект для расчёта конструкции
     comp = FEMComput(beam)
     # Выводим результаты расчёта

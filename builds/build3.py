@@ -14,6 +14,7 @@ sys.path.append(str(main_dir))
 
 from fem_tools import Beam
 from fem_tools import FEMComput
+from fem_tools import save_model
 
 # Имя модели
 name_model = 'model3'
@@ -77,7 +78,7 @@ def main():
     comp = FEMComput(beam)
 
     # Сохраняем файл нашей модели
-    beam.save(file_model, comment)
+    save_model(beam, file_model, comment)
     # Сохраняем результаты расчёта
     comp.save_results(file_res, comment)
 
