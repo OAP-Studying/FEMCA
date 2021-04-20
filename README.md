@@ -1,6 +1,31 @@
 # __FEMCA__
 Ультрасовременное ПО для расчёта МКЭ.
 
+# __Как пользоваться__
+
+## Рассчитать файл конструкции
+
+```console
+<WORK_DIRECTORY>$ py main.py models/model1.txt
+```
+
+## __Тесты__
+
+## ___Запустить стандартный тест___
+
+```console
+<WORK_DIRECTORY>$ py main.py test
+```
+
+## ___Протестировать конструкцию из файла___
+
+```console
+<WORK_DIRECTORY>$ py main.py test models/model1.txt
+```
+```console
+<WORK_DIRECTORY>$ py main.py models/model1.txt test
+```
+
 # __Структура проекта__
 
 ## [___builds___](builds)
