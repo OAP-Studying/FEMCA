@@ -3,7 +3,6 @@
 structure - отдельний модуль для описания конструкции,
 состоящей из КЭ
 """
-import sys
 from abc import ABC, abstractmethod, abstractproperty
 from dataclasses import dataclass, field
 from typing import List

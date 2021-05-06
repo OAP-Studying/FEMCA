@@ -139,7 +139,7 @@ class FEMComput:
                 #  3 => 3
                 #  4    4
 
-    def find_q(self, method='gauss', recalculate=False):
+    def find_q(self, recalculate=False):
         """
         Найти вектор неизвестных узловым перемещений
             method: метод решения систему уравнений (inv, guass)
@@ -148,13 +148,10 @@ class FEMComput:
         # если задан параметр пересчитать - то есть в любом случае
         # произвести расчёт занаво или еще не было посчитано
         if recalculate or not self.res_q:
-            # В зависимости от метода находм векторстолбец q
-            if method == 'inv':
-                self.res_q = m.find_with_inv(self.K, self.f)
-            elif method == 'gauss':
-                self.res_q = m.find_with_gauss(self.K, self.f)
-            else:
-                raise Exception(f'Ошибочный параметр method="{method}"')
+            # Находим перемещения
+            K = m.Matrix(arr=self.K)
+            f = m.Matrix(arr=self.f)
+            self.res_q = m.find_with_gauss(K, f).to_list()
 
         # возвращаем посчитанное значение вектора перемещений
         # или то, чо было вычисленно ранее
