@@ -9,23 +9,6 @@
 <WORK_DIRECTORY>$ py main.py models/model1.txt
 ```
 
-## __Тесты__
-
-## ___Запустить стандартный тест___
-
-```console
-<WORK_DIRECTORY>$ py main.py test
-```
-
-## ___Протестировать конструкцию из файла___
-
-```console
-<WORK_DIRECTORY>$ py main.py test models/model1.txt
-```
-```console
-<WORK_DIRECTORY>$ py main.py models/model1.txt test
-```
-
 # __Структура проекта__
 
 ## [___builds___](builds)
@@ -43,7 +26,7 @@
 ## [structure.py](fem_tools/structure.py)
 - Модуль предназначен для описания конструкции, состоящей из КЭ
 
-![схема элементов](data/img/sructure.png)
+![схема элементов](data/img/sructure.jpg)
 
 ## [matan.py](fem_tools/matan.py)
 - модуль предоставляющий математические функции

@@ -11,10 +11,11 @@ main_dir = Path(__file__).resolve().parent.parent
 # Добавляем её в путь поиска модулей
 sys.path.append(str(main_dir))
 
-
-from fem_tools import Beam
+from fem_tools import Force
+from fem_tools import Distance
 from fem_tools import FEMComput
 from fem_tools import save_model
+from fem_tools import LineStructure
 
 # Имя модели
 name_model = 'model2'
@@ -30,46 +31,46 @@ def main():
     # Модуль Юнга
     E = 1
     # Площадь поперечного сечения
-    F = 1
+    A = 1
     # Длина элемента
     L = 1
     # Жёсткость пружинки
-    C = 2*E*F/L
+    C = 2*E*A/L
     # Первое усилие в конструкции
-    F1 = 2*E*F
+    F1 = 2*E*A
     # Второе усилие в конструкции
-    F2 = 3*E*F
+    F2 = 3*E*A
 
     # Начинаем построения
     # Заготовка - пустая конструкция
-    beam = Beam()
+    line_struct = LineStructure()
     # Добавляем первый стержень
-    rod1 = beam.add_rod(E=E, F=F, L=L)
+    rod1 = line_struct.add_rod(E=E, A=A, D=Distance(L))
     # К правому узлу стержня rod1 добавляем еще один элемент стержень
-    rod2 = beam.add_rod(E=E, F=F, n1=rod1.node2, L=L)
+    rod2 = line_struct.add_rod(E=E, A=A, n1=rod1.n2, D=Distance(L))
     # К правому узлу стержня rod1 добавляем последний стержень
-    rod3 = beam.add_rod(E=E, F=F, n1=rod2.node2, L=L)
+    rod3 = line_struct.add_rod(E=E, A=A, n1=rod2.n2, D=Distance(L))
     # К правому узлу стержня rod1 добавляем пружинку, длина в противополоную сторону
-    spring1 = beam.add_spring(C=C, n1=rod1.node2, L=-L)
+    spring1 = line_struct.add_spring(C=C, n1=rod1.n2, D=Distance(-L))
 
     # Добавляем закрепление конструкции
     # К полседнему узлу - узлу node2 пружинки
-    beam.add_pinning(spring1.node2)
+    line_struct.add_pinning(spring1.n2)
     # к третьему узлу - правому узлу стержня rod3
-    rod3.node2.add_pinning()
+    rod3.n2.add_pinning()
 
     # Добавляем усилия к конструкции
     # В левом узле стержня rod1 точечную силу F1
-    beam.add_point_force(rod1.node1, F1)
+    line_struct.add_point_force(rod1.n1, Force(F1))
     # В правом узле стержня rod2 точечную силу F2
-    rod2.node2.add_point_force(F2)
+    rod2.n2.add_point_force(Force(F2))
 
     # Начинаем расчёты
     # Отдельный объект для расчёта конструкции
-    comp = FEMComput(beam)
+    comp = FEMComput(line_struct)
 
     # Сохраняем файл нашей модели
-    save_model(beam, file_model, comment)
+    save_model(line_struct, file_model, comment)
     # Сохраняем результаты расчёта
     comp.save_results(file_res, comment)
 

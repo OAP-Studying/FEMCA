@@ -11,10 +11,12 @@ main_dir = Path(__file__).resolve().parent.parent
 # Добавляем её в путь поиска модулей
 sys.path.append(str(main_dir))
 
-
-from fem_tools import Beam
+from fem_tools import Force
+from fem_tools import Distance
 from fem_tools import FEMComput
 from fem_tools import save_model
+from fem_tools import LineStructure
+
 
 # Имя модели
 name_model = 'model3'
@@ -30,55 +32,55 @@ def main():
     # Модуль Юнга
     E = 1
     # Площадь поперечного сечения
-    F = 1
+    A = 1
     # Длина элемента
     L = 1
     # Жёсткость пружинки
-    C = 2*E*F/L
+    C = 2*E*A/L
     # Точечное усилие в конструкции
-    F1 = 2*E*F
+    F1 = 2*E*A
     # Максимальная нагрузка в треугольной рспределённой
-    q2 = E*F/L
+    q2 = E*A/L
 
     # Начинаем построения
     # Заготовка - пустая конструкция
-    beam = Beam()
+    line_struct = LineStructure()
     # Собираем конструкцию, добавляем пружинку
-    spring1 = beam.add_spring(C=2*C, L=L)
+    spring1 = line_struct.add_spring(C=2*C, D=Distance(L))
     # Дальше наращиваем стержень
-    rod1 = beam.add_rod(E=E, F=F, n1=spring1.node2, L=L)
+    rod1 = line_struct.add_rod(E=E, A=A, n1=spring1.n2, D=Distance(L))
     # Еще один
-    rod2 = beam.add_rod(E=E, F=F, n1=rod1.node2, L=L)
+    rod2 = line_struct.add_rod(E=E, A=A, n1=rod1.n2, D=Distance(L))
     # 3-ий стержень
-    rod3 = beam.add_rod(E=E, F=F, n1=rod2.node2, L=L)
+    rod3 = line_struct.add_rod(E=E, A=A, n1=rod2.n2, D=Distance(L))
     # В конце добавляем пружинку
-    spring2 = beam.add_spring(C=C, n1=rod3.node2, L=L)
+    spring2 = line_struct.add_spring(C=C, n1=rod3.n2, D=Distance(L))
 
     # Добавляем закрепление конструкции
     # Получаем нулевой узел конструкции
     # В левом узле пружинки 1
-    beam.add_pinning(spring1.node1)
+    line_struct.add_pinning(spring1.n1)
     # К последнему узлу - правому пружинки 2
-    spring2.node2.add_pinning()
+    spring2.n2.add_pinning()
 
     # Добавляем точечные усилия к конструкции
     # Прикладываем в 2-ом узле - правом узле стержня rod1 силу F1
-    beam.add_point_force(rod1.node2, -F1)
+    line_struct.add_point_force(rod1.n2, Force(-F1))
     # или
-    # rod1.node2.add_point_force(-F1)
+    # rod1.node2.add_point_force(Force(-F1))
 
     # Добавляем распределённые усилия
     # К стержню 2 добавляем треугольную распределённую нагрузку
-    beam.add_linear_distributed_force(rod2, q1=0, q2=q2)
+    line_struct.add_linear_distributed_force(rod2, q1=0, q2=q2)
     # или
     # rod2.add_linear_distributed_force(q1=0, q2=q2)
 
     # Начинаем расчёты
     # Отдельный объект для расчёта конструкции
-    comp = FEMComput(beam)
+    comp = FEMComput(line_struct)
 
     # Сохраняем файл нашей модели
-    save_model(beam, file_model, comment)
+    save_model(line_struct, file_model, comment)
     # Сохраняем результаты расчёта
     comp.save_results(file_res, comment)
 
