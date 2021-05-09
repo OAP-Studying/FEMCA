@@ -148,5 +148,30 @@ class TestMatrixOperations(unittest.TestCase):
         msg = f"\n{row}НЕ РАВНО \n{res}"
         self.assertEqual(row, res, msg)
 
+    def test_assign_good_one_matrix_to_matrix_row(self):
+        """Присвоить валидную матрицу строку строке матрицы"""
+        m = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        one_m = Matrix([10, 11, 12], to_row=True)
+        m[0] = one_m
+        res = Matrix([[10, 11, 12], [4, 5, 6], [7, 8, 9]])
+        msg = f"\n{m}НЕ РАВНО \n{res}"
+        self.assertEqual(m, res, msg)
+
+    def test_assign_bad_one_matrix_to_matrix_row(self):
+        """Присвоить НЕвалидную матрицу строку строке матрицы"""
+        m = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        one_m = Matrix([10, 11, 12, 14], to_row=True)
+        with self.assertRaises(Exception):
+            # размерности не подходят
+            m[0] = one_m
+
+    def test_assign_same_row_to_matrix_row(self):
+        """Присвоить строке матрицы её же строку"""
+        m = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        m[0] = m[2]
+        res = Matrix([[7, 8, 9], [4, 5, 6], [7, 8, 9]])
+        msg = f"\n{m}НЕ РАВНО \n{res}"
+        self.assertEqual(m, res, msg)
+
 if __name__ == '__main__':
     unittest.main()
