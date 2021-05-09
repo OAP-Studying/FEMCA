@@ -173,5 +173,21 @@ class TestMatrixOperations(unittest.TestCase):
         msg = f"\n{m}НЕ РАВНО \n{res}"
         self.assertEqual(m, res, msg)
 
+    def test_mult_row_of_matrix_by_num(self):
+        """Умножить строку матрицы на число"""
+        m = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        m[0] *= 2
+        res = Matrix([[2, 4, 6], [4, 5, 6], [7, 8, 9]])
+        msg = f"\n{m}НЕ РАВНО \n{res}"
+        self.assertEqual(m, res, msg)
+
+    def test_sub_row_of_matrix_by_num(self):
+        """Делить строку матрицы на число"""
+        m = Matrix([[2, 4, 6], [4, 5, 6], [7, 8, 9]])
+        m[0] /= 2
+        res = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        msg = f"\n{m}НЕ РАВНО \n{res}"
+        self.assertEqual(m, res, msg)
+
 if __name__ == '__main__':
     unittest.main()
