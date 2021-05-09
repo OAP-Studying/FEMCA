@@ -189,5 +189,12 @@ class TestMatrixOperations(unittest.TestCase):
         msg = f"\n{m}НЕ РАВНО \n{res}"
         self.assertEqual(m, res, msg)
 
+    def test_compare_matrix_row_and_separate_row(self):
+        """Cравнить строку матрицы и отдельную строку"""
+        m = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        row = Matrix([1, 2, 3], to_row=True)
+        msg = f"\n{m[0]} НЕ РАВНО {row}"
+        self.assertTrue(m[0] == row, msg)
+
 if __name__ == '__main__':
     unittest.main()
