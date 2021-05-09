@@ -132,6 +132,21 @@ class TestMatrixOperations(unittest.TestCase):
         msg = f"\n{m}умножить на {num} НЕ РАВНО\n{res}"
         self.assertEqual(m * num, res, msg)
 
+    def test_assign_number_to_column_row(self):
+        """Присвоить число строке столбца"""
+        col = Matrix([1, 2, 3])
+        col[0] = 0
+        res = Matrix([0, 2, 3])
+        msg = f"\n{col}НЕ РАВНО \n{res}"
+        self.assertEqual(col, res, msg)
+
+    def test_assign_number_to_row_column(self):
+        """Присвоить число столбцу строки"""
+        row = Matrix([1, 2, 3], to_row=True)
+        row[0] = 0
+        res = Matrix([0, 2, 3], to_row=True)
+        msg = f"\n{row}НЕ РАВНО \n{res}"
+        self.assertEqual(row, res, msg)
 
 if __name__ == '__main__':
     unittest.main()
