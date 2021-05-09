@@ -196,6 +196,10 @@ class LineFE(FiniteElement):
     # Распределённые нагрузки на элементе
     q: List[List[Force]] = field(init=False, default_factory=list)
 
+    # Так называем КЕШ простой матрицы жёсткости
+    # Чтобы каждый раз не вычислять её
+    _simple_K: matan.Matrix = field(init=False, default=None)
+
     @property
     def L(self):
         """Длина элемента"""
@@ -240,25 +244,29 @@ class LineFE(FiniteElement):
 
     def get_simple_K(self):
         """Получить ПРОСТУЮ матрицу жёсткости без учета материала"""
-        # Перед созданием матрицы зададимся косинусом
-        # и синусом угла наклона элемента
-        cos_a = math.cos(self.alpha)
-        sin_a = math.sin(self.alpha)
+        # Если матрица еще не вычислялась
+        if not self._simple_K:
+            # Вычисляем её
+            # Перед созданием матрицы зададимся косинусом
+            # и синусом угла наклона элемента
+            cos_a = math.cos(self.alpha)
+            sin_a = math.sin(self.alpha)
 
-        # Упрощённая матрица жёсткости
-        K = matan.Matrix([[cos_a**2,     cos_a*sin_a,  -cos_a**2,    -cos_a*sin_a],
-                          [cos_a*sin_a,  sin_a**2,     -cos_a*sin_a, -sin_a**2],
-                          [-cos_a**2,    -cos_a*sin_a, cos_a**2,     cos_a*sin_a],
-                          [-cos_a*sin_a, -sin_a**2,    cos_a*sin_a,  sin_a**2]])
+            # Упрощённая матрица жёсткости
+            self._simple_K = matan.Matrix(
+                [[cos_a**2,     cos_a*sin_a,  -cos_a**2,    -cos_a*sin_a],
+                 [cos_a*sin_a,  sin_a**2,     -cos_a*sin_a, -sin_a**2],
+                 [-cos_a**2,    -cos_a*sin_a, cos_a**2,     cos_a*sin_a],
+                 [-cos_a*sin_a, -sin_a**2,    cos_a*sin_a,  sin_a**2]])
 
-        # Теперь округляем все элементы матрицы жеёсткости с точностью
-        # До второго знака после запятой
-        for i in range(K.rows):
-            for j in range(K.cols):
-                K[i, j] = round(K[i, j], 2)
+            # Теперь округляем все элементы матрицы жеёсткости с точностью
+            # До второго знака после запятой
+            for i in range(self._simple_K.rows):
+                for j in range(self._simple_K.cols):
+                    self._simple_K[i, j] = round(self._simple_K[i, j], 2)
 
-        # Возвращаем её
-        return K
+        # Возвращаем ПРОСТУЮ матрицу жёсткости
+        return self._simple_K
 
     def add_linear_distributed_force(self, q1=1, q2=1):
         """

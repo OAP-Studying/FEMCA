@@ -211,7 +211,7 @@ class RowAccess:
 
     def to_list(self):
         """Привести строку к виду списка"""
-       # Получаем элементы в строке
+        # Получаем элементы в строке
         row = [self.m[self.i_row, j] for j in range(self.cols)]
         # Возвращаем список
         return row
@@ -371,7 +371,8 @@ class Matrix:
 
             # Теперь проверяем возможен ли такой индекс
             if not(0 <= index < len(self)):
-                raise IndexError(f"Bad index={index} not in [0, {len(self)-1}]")
+                raise IndexError(
+                    f"Bad index={index} not in [0, {len(self)-1}]")
         else:
             # Если двухмерная то index - это индекс строки
             # Если индекс отрицателен, то приводим его к правильному виду

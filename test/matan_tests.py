@@ -196,5 +196,6 @@ class TestMatrixOperations(unittest.TestCase):
         msg = f"\n{m[0]} НЕ РАВНО {row}"
         self.assertTrue(m[0] == row, msg)
 
+
 if __name__ == '__main__':
     unittest.main()

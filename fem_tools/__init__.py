@@ -8,4 +8,5 @@ from .calc import FEMComput
 from .fio import save_model
 from .fio import load_model
 
-__all__ = ['LineStructure', 'Force', 'Distance', 'FEMComput', 'save_model', 'load_model']
+__all__ = ['LineStructure', 'Force', 'Distance',
+           'FEMComput', 'save_model', 'load_model']
