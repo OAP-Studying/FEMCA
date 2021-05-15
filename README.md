@@ -9,6 +9,11 @@
 <WORK_DIRECTORY>$ py main.py models/model1.txt
 ```
 
+## Тесты
+```console
+<WORK_DIRECTORY>$ py -m unittest tests/matan_tests.py
+```
+
 # __Структура проекта__
 
 ## [___builds___](builds)
@@ -20,20 +25,20 @@
 ## [___results___](results)
 - папка, содержащая примеры расчёта моделей, лежащих в папке models
 
-# __fem_tools__
+# __fem__
 >это пакет, в котором собрана логика программы - её ядро. В пакете расположены следующие модули
 
-## [structure.py](fem_tools/structure.py)
+## [structure.py](fem/structure.py)
 - Модуль предназначен для описания конструкции, состоящей из КЭ
 
 ![схема элементов](data/img/sructure.jpg)
 
-## [matan.py](fem_tools/matan.py)
+## [matan.py](fem/matan.py)
 - модуль предоставляющий математические функции
 для работы с матричными выражениями, можно сказать аналог numpy
 
-## [calc.py](fem_tools/calc.py)
+## [calc.py](fem/calc.py)
 - отдельный модуль для расчёта конструкций, отличается от matan тем, что завязан именно на конструкции
 
-## [fio.py](fem_tools/fio.py)
+## [fio.py](fem/fio.py)
 - отдельный модуль для работы с файлами конструкций

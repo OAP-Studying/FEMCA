@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Тесты модуля matan"""
 import unittest
-from fem_tools.matan import Matrix
+from fem.matan import Matrix
 
 
 class TestMatrixOperations(unittest.TestCase):

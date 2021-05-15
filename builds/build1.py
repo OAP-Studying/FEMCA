@@ -11,11 +11,11 @@ main_dir = Path(__file__).resolve().parent.parent
 # Добавляем её в путь поиска модулей
 sys.path.append(str(main_dir))
 
-from fem_tools import Force
-from fem_tools import Distance
-from fem_tools import FEMComput
-from fem_tools import save_model
-from fem_tools import LineStructure
+from fem import Force
+from fem import Distance
+from fem import FEMComput
+from fem import save_model
+from fem import LineStructure
 
 
 # Имя модели

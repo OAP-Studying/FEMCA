@@ -7,8 +7,8 @@ main - главный модуль приложения
 """
 import sys
 import os
-from fem_tools import FEMComput
-from fem_tools import load_model
+from fem import FEMComput
+from fem import load_model
 
 
 def solve(file_model):
