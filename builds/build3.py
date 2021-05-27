@@ -71,7 +71,7 @@ def main():
 
     # Добавляем распределённые усилия
     # К стержню 2 добавляем треугольную распределённую нагрузку
-    line_struct.add_linear_distributed_force(rod2, q1=0, q2=q2)
+    line_struct.add_linear_distributed_force(rod2, q1=Force(0), q2=Force(q2))
     # или
     # rod2.add_linear_distributed_force(q1=0, q2=q2)
 
