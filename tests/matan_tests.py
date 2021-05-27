@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Тесты модуля matan"""
 import unittest
+import random
 from fem.matan import Matrix
 
 
@@ -217,6 +218,62 @@ class TestMatrixOperations(unittest.TestCase):
         for i in range(row.cols):
             msg = f'\n{row}row[{i}]={row[i]} не равен row[0, {i}]={row[0, i]}'
             self.assertEqual(row[i], row[0, i], msg)
+
+    def test_set_col_elemet(self):
+        """Тест на присвоение элемента матрицы столбца"""
+        # Элемент столбца можно задать:
+        # либо через одну скобку [i, j]
+        # Через одну скобку с одним индексом [k] - если это строка или столбец
+        col = Matrix([1, 2, 3, 4])
+        # проверка задания элемента
+        for i in range(col.rows):
+            # Задаём элемент через единственный индекс
+            num = random.random()
+            col[i] = num
+            # Проверяем через единственный индекс
+            msg = f'\n{col} [i] num={num} не равно col[{i}]={col[i]}'
+            self.assertEqual(num, col[i], msg)
+            # Проверяем через двойной индекс
+            msg = f'\n{col} [i] num={num} не равно col[{i}, 0]={col[i, 0]}'
+            self.assertEqual(num, col[i, 0], msg)
+
+            # Задаём элемент через двойной индекс
+            num = random.random()
+            col[i, 0] = num
+            # Проверяем через двойной индекс
+            msg = f'\n{col}[i, j] num={num} не равно col[{i}, 0]={col[i, 0]}'
+            self.assertEqual(num, col[i, 0], msg)
+            # Проверяем через единственный индекс
+            msg = f'\n{col}[i, j] num={num} не равно col[{i}]={col[i]}'
+            self.assertEqual(num, col[i], msg)
+
+    def test_set_row_elemet(self):
+        """Тест на присвоение элемента матрицы строки"""
+        # Элемент строки можно задать:
+        # либо через одну скобку [i, j]
+        # Через одну скобку с одним индексом [k] - если это строка или столбец
+        row = Matrix([1, 2, 3, 4], to_row=True)
+        # проверка задания элемента
+        for i in range(row.cols):
+            # Задаём элемент через единственный индекс
+            num = random.random()
+            row[i] = num
+            # Проверяем через единственный индекс
+            msg = f'\n{row} [i] num={num} не равно row[{i}]={row[i]}'
+            self.assertEqual(num, row[i], msg)
+            # Проверяем через двойной индекс
+            msg = f'\n{row} [i] num={num} не равно row[0, {i}]={row[0, i]}'
+            self.assertEqual(num, row[0, i], msg)
+
+            # Задаём элемент через двойной индекс
+            num = random.random()
+            row[0, i] = num
+            # Проверяем через двойной индекс
+            msg = f'\n{row}[i, j] num={num} не равно row[0, {i}]={row[0, i]}'
+            self.assertEqual(num, row[0, i], msg)
+            # Проверяем через единственный индекс
+            msg = f'\n{row}[i, j] num={num} не равно row[{i}]={row[i]}'
+            self.assertEqual(num, row[i], msg)
 
 
 if __name__ == '__main__':
