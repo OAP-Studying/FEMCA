@@ -246,7 +246,7 @@ def load_model(file_name):
         # Получаем элемент с нужным индексом
         el = line_struct.items[i]
         # Добавляем распределёнку к системе
-        line_struct.add_linear_distributed_force(el=el, q1=q1.val, q2=q2.val)
+        line_struct.add_linear_distributed_force(el=el, q1=q1, q2=q2)
 
     # В конце возвращаем собранный объект конструкции
     return line_struct
