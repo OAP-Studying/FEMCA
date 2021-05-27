@@ -80,8 +80,8 @@ class TestSaveLoad(unittest.TestCase):
 
         # Полученные два файла должны быть одинаковыми
         # То есть все строки должны быть одинаковыми
-        cont1 = open(self.f_model1)
-        cont2 = open(self.f_model2)
+        cont1 = open(self.f_model1, 'r', encoding='utf8')
+        cont2 = open(self.f_model2, 'r', encoding='utf8')
 
         # Первая проверка, построчно проверяем файлы
         # Считываем за раз строку из первого файла
@@ -108,8 +108,8 @@ class TestSaveLoad(unittest.TestCase):
 
         # Полученные два файла должны быть одинаковыми
         # То есть все строки должны быть одинаковыми
-        cont1 = open(self.f_res1)
-        cont2 = open(self.f_res2)
+        cont1 = open(self.f_res1, 'r', encoding='utf8')
+        cont2 = open(self.f_res2, 'r', encoding='utf8')
 
         # ВТОРАЯ проверка, построчно проверяем файлы
         # Считываем за раз строку из первого файла
@@ -174,8 +174,8 @@ class TestSaveLoad(unittest.TestCase):
 
         # Полученные два файла должны быть одинаковыми
         # То есть все строки должны быть одинаковыми
-        cont1 = open(self.f_model1)
-        cont2 = open(self.f_model2)
+        cont1 = open(self.f_model1, encoding='utf-8')
+        cont2 = open(self.f_model2, encoding='utf-8')
 
         # Первая проверка, построчно проверяем файлы
         # Считываем за раз строку из первого файла
@@ -218,4 +218,3 @@ class TestSaveLoad(unittest.TestCase):
         # Закрываем открытые файлы
         cont1.close()
         cont2.close()
-
