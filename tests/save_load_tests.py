@@ -263,7 +263,7 @@ class TestSaveLoad(unittest.TestCase):
 
         # Добавляем распределённые усилия
         # К стержню 2 добавляем треугольную распределённую нагрузку
-        ls1.add_linear_distributed_force(rod2, q1=0, q2=q2)
+        ls1.add_linear_distributed_force(rod2, q1=Force(0), q2=Force(q2))
         # или
         # rod2.add_linear_distributed_force(q1=Force(0), q2=Force(q2))
 
@@ -440,15 +440,16 @@ class TestSaveLoad(unittest.TestCase):
         # Начинаем расчёты
         # Отдельные объекты для расчёта конструкции
         comp1 = FEMComput(ls1)
-        comТо
-        есть
-        все
-        строки
-        должны
-        быть
-        одинаковыми
-        cont1 = open(self.f_res1)
-        cont2 = open(self.f_res2)
+        comp2 = FEMComput(ls2)
+
+        # Сохраняем результаты вычислений обеих моделей
+        comp1.save_results(self.f_res1)
+        comp2.save_results(self.f_res2)
+
+        # Полученные два файла должны быть одинаковыми
+        # То есть все строки должны быть одинаковыми
+        cont1 = open(self.f_res1, 'r', encoding='utf8')
+        cont2 = open(self.f_res2, 'r', encoding='utf8')
 
         # ВТОРАЯ проверка, построчно проверяем файлы
         # Считываем за раз строку из первого файла
@@ -463,20 +464,6 @@ class TestSaveLoad(unittest.TestCase):
         # Закрываем открытые файлы
         cont1.close()
         cont2.close()
-        # Полученные два файла должны быть одинаковыми
-        # То есть все строки должны быть одинаковыми
-        cont1 = open(self.f_res1)
-        cont2 = open(self.f_res2)
-
-        # ВТОРАЯ проверка, построчно проверяем файлы
-        # Считываем за раз строку из первого файла
-        i = 0
-        for line1 in cont1:
-            # Считываем также строку и из второго файла
-            line2 = cont2.readline()
-            i += 1
-            msg = f'[строка {i}] Файлы результатов должны быть одинаковыми'
-            self.assertEqual(line1, line2, msg)
 
         # Закрываем открытые файлы
         cont1.close()
