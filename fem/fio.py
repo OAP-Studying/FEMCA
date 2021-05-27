@@ -2,7 +2,9 @@
 """
 fio - Отдельный модуль для работы с файлами конструкций
 """
+from math import pi
 import sys
+import os
 from .structure import Force, LineStructure
 from .structure import Spring
 from .structure import Node
@@ -81,7 +83,7 @@ def save_model(line_struct: LineStructure, file_name, comment=''):
                 # Поднимаем флаг - говорим что усилия есть
                 is_have = True
             # Выводим индекс узла и значения силы
-            print(f"\t{i} {F.x:.2f} {F.y:.2f}")
+            print(f"\t{i+1} {F.x:.2f} {F.y:.2f}")
 
     # Дальше указываем распределенные нагрузки в элементе
     # Переменная флаг, мы вообще имеем распределённую нагрузку в конструкции?
@@ -227,7 +229,7 @@ def load_model(file_name):
         # Объект силы
         F = Force(Fx, Fy)
         # Получаем узел с нужным индексом
-        node = line_struct.grid[i]
+        node = line_struct.grid[i-1]
         # Добавляем усилие к узлу
         line_struct.add_point_force(node=node, value=F)
 
@@ -250,3 +252,72 @@ def load_model(file_name):
 
     # В конце возвращаем собранный объект конструкции
     return line_struct
+
+
+def executive_control_section(file_name):
+    """Обязательная часть Executive Control section"""
+    name = os.path.splitext(os.path.basename(file_name))[0].upper()
+    print(f'ID LINEAR,{name}')
+    print('SOL 101')
+    print('TIME 2')
+    print('CEND')
+
+
+def case_control_section(ls: LineStructure):
+    print("TITLE = LINEAR STATICS USER'S SAMPLE INPUT FILE")
+    print("SUBTITLE = TRUSS STRUCTURE")
+    for node in ls.grid:
+        if node.forces:
+            break
+    print(f"LABEL = POINT LOAD AT GRID POINT {node.pos+1}")
+    print("LOAD = 10")
+    print("SPC = 11")
+    print("DISPLACEMENT = ALL")
+    print("ELFORCE = ALL")
+    print("ELSTRESS = ALL")
+
+
+def bulk_data_section(ls: LineStructure):
+    print("BEGIN BULK")
+    print("$\n$ THE GRID POINTS LOCATIONS\n$ DESCRIBE THE GEOMETRY\n$")
+
+    # выводим информацию об узлах
+    for node in ls.grid:
+        line = f'GRID    {node.pos+1}'
+        line += "               "
+        line += f'{node.x:<8.2f}{node.y:<8.2f}0.      '
+        line += "        3456"
+        print(line)
+
+    print("$\n$ MEMBERS ARE MODELED USING\n$ ROD ELEMENTS\n$")
+
+def save_model_nastran(ls: LineStructure, file_name, comment=''):
+    """Сохранить модель конструкции"""
+    # Открываем файл на запись
+    file = open(file_name, 'w', encoding='utf8')
+    # Переопределяем стандартный вывод
+    sys.stdout = file
+
+    # Выводи комментарий к модели, если он существует
+    if not comment:
+        comment = f'FILENAME - {os.path.basename(file_name).upper()}'
+
+    print(f'$ {comment}\n$')
+
+    # Обязательная часть Executive Control section
+    executive_control_section(file_name)
+
+    # Печатаем вербальный разделеитель пустую строку
+    print()
+
+    # Case Control section
+    case_control_section(ls)
+
+    # Печатаем вербальный разделеитель пустую строку
+    print()
+    # Bulk Data section
+    bulk_data_section(ls)
+
+    file.close()
+    # Возвращаем стандартный вывод
+    sys.stdout = sys.__stdout__

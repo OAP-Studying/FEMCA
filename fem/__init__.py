@@ -7,6 +7,7 @@ from .structure import LineStructure, Force, Distance
 from .calc import FEMComput
 from .fio import save_model
 from .fio import load_model
+from .fio import save_model_nastran
 
 __all__ = ['LineStructure', 'Force', 'Distance',
-           'FEMComput', 'save_model', 'load_model']
+           'FEMComput', 'save_model', 'load_model', 'save_model_nastran']

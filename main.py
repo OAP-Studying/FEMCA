@@ -9,6 +9,7 @@ import sys
 import os
 from fem import FEMComput
 from fem import load_model
+from fem import save_model_nastran
 
 
 def solve(file_model):
@@ -25,8 +26,16 @@ if __name__ == "__main__":
     # Если в коммандной строке ввели не только имя программы
     if len(sys.argv) > 1:
         # Запускаем графический интерфейс?
-        if 'gui' in sys.argv:
-            print("Здесь будет GUI")
+        if '-n' in sys.argv:
+            sys.argv.remove('-n')
+            sys.argv.pop(0)
+            file_model = sys.argv[0]
+            if os.path.exists(file_model):
+                # сохраяняем в формат настрана
+                ls = load_model(file_model)
+                nas_model = os.path.splitext(
+                    os.path.basename(file_model))[0] + '.dat'
+                save_model_nastran(ls, nas_model)
         else:
             # Если здесь, то нужно делать расчёт
             # Получаем имя файла модели

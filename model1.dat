@@ -1,0 +1,30 @@
+$ FILENAME - MODEL1.DAT
+$
+ID LINEAR,MODEL1
+SOL 101
+TIME 2
+CEND
+
+TITLE = LINEAR STATICS USER'S SAMPLE INPUT FILE
+SUBTITLE = TRUSS STRUCTURE
+LABEL = POINT LOAD AT GRID POINT 1
+LOAD = 10
+SPC = 11
+DISPLACEMENT = ALL
+ELFORCE = ALL
+ELSTRESS = ALL
+
+BEGIN BULK
+$
+$ THE GRID POINTS LOCATIONS
+$ DESCRIBE THE GEOMETRY
+$
+GRID    1               0.00    0.00    0.              3456
+GRID    2               1.00    0.00    0.              3456
+GRID    3               2.00    0.00    0.              3456
+GRID    4               3.00    0.00    0.              3456
+GRID    5               3.00    0.00    0.              3456
+$
+$ MEMBERS ARE MODELED USING
+$ ROD ELEMENTS
+$
