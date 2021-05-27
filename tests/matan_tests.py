@@ -207,6 +207,17 @@ class TestMatrixOperations(unittest.TestCase):
             msg = f'\n{col}col[{i}]={col[i]} не равен col[{i}, 0]={col[i, 0]}'
             self.assertEqual(col[i], col[i, 0], msg)
 
+    def test_get_row_elemet(self):
+        """Тест на получение элемента матрицы строки"""
+        # Элемент строки можно получить:
+        # либо через одну скобку [i, j]
+        # Через одну скобку с одним индексом [k] - если это строка или столбец
+        row = Matrix([1, 2, 3, 4], to_row=True)
+        # Проверка полученеие элемента
+        for i in range(row.cols):
+            msg = f'\n{row}row[{i}]={row[i]} не равен row[0, {i}]={row[0, i]}'
+            self.assertEqual(row[i], row[0, i], msg)
+
 
 if __name__ == '__main__':
     unittest.main()
