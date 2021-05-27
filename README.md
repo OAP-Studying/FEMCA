@@ -11,7 +11,7 @@
 
 ## Тесты
 ```console
-<WORK_DIRECTORY>$ py -m unittest tests/matan_tests.py
+<WORK_DIRECTORY>$ py -m unittest discover -v
 ```
 
 # __Структура проекта__
