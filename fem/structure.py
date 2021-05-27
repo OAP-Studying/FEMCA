@@ -81,7 +81,11 @@ class Vector(ABC):
     @property
     def x(self):
         """Проекция силы на ось x"""
-        return self.val*math.cos(self.alpha)
+        res = round(self.val*math.cos(self.alpha), 2)
+        if res == 0:
+            return 0
+        else:
+            return res
 
     @x.setter
     @abstractmethod
@@ -92,7 +96,11 @@ class Vector(ABC):
     @property
     def y(self):
         """Проекция силы на ось y"""
-        return self.val*math.sin(self.alpha)
+        res = round(self.val*math.sin(self.alpha), 2)
+        if res == 0:
+            return 0
+        else:
+            return res
 
     @y.setter
     @abstractmethod
@@ -268,7 +276,7 @@ class LineFE(FiniteElement):
         # Возвращаем ПРОСТУЮ матрицу жёсткости
         return self._simple_K
 
-    def add_linear_distributed_force(self, q1=1, q2=1):
+    def add_linear_distributed_force(self, q1: Force, q2: Force):
         """
         Добавить распределённую нагрузку - ВДОЛЬ элемента
         Принимает:
@@ -276,8 +284,6 @@ class LineFE(FiniteElement):
           q2 : нагрузка в конце элемента
         """
         # Приведём силы по краям элемента к объектам сил
-        q1 = Force(val=q1, alpha=self.alpha)
-        q2 = Force(val=q2, alpha=self.alpha)
         self.q.append([q1, q2])
 
 
@@ -418,7 +424,7 @@ class LineStructure(FiniteElement):
         """
         node.add_point_force(value)
 
-    def add_linear_distributed_force(self, el: LineFE, q1=1, q2=1):
+    def add_linear_distributed_force(self, el: LineFE, q1: Force, q2: Force):
         """
         Добавить распределённую нагрузку - ВДОЛЬ элемента
         Принимает:
