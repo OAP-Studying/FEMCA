@@ -275,6 +275,49 @@ class TestMatrixOperations(unittest.TestCase):
             msg = f'\n{row}[i, j] num={num} не равно row[{i}]={row[i]}'
             self.assertEqual(num, row[i], msg)
 
+    def test_get_matrix_element(self):
+        """Тест на получение элемента матрицы"""
+        # Элемент матрицы можно получить:
+        # либо через одну скобку [i, j]
+        # Либо через двойную [i][j]
+        m = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        # Обходим все элементы матрицы и проверяем
+        # правильность их возвращения
+        for i in range(m.rows):
+            for j in range(m.cols):
+                msg = f'\n{m}m[{i}, {j}]={m[i, j]} не равен m[{i}][{j}]={m[i][j]}'
+                self.assertEqual(m[i, j], m[i][j], msg)
+
+    def test_set_matrix_element(self):
+        """Тест на присвоение элемента матрицы"""
+        # Элемент матрицы можно получить:
+        # либо через одну скобку [i, j]
+        # Либо через двойную [i][j]
+        m = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        # Обходим все элементы матрицы и проверяем
+        # правильность их возвращения
+        for i in range(m.rows):
+            for j in range(m.cols):
+                # Задаём число через одну скобку
+                num = random.random()
+                m[i, j] = num
+                # Проверяем через одну скобку
+                msg = f'\n{m}[i, j] num={num} не равно m[{i}, {j}]={m[i, j]}'
+                self.assertEqual(num, m[i, j], msg)
+                # Проверяем через две скобки
+                msg = f'\n{m}[i, j] num={num} не равно m[{i}][{j}]={m[i][j]}'
+                self.assertEqual(num, m[i][j], msg)
+
+                # Задаём число через две скобки
+                num = random.random()
+                m[i][j] = num
+                # Проверяем через две скобки
+                msg = f'\n{m}[i][j] num={num} не равно m[{i}][{j}]={m[i][j]}'
+                self.assertEqual(num, m[i][j], msg)
+                # Проверяем через одну скобку
+                msg = f'\n{m}[i][j] num={num} не равно m[{i}, {j}]={m[i, j]}'
+                self.assertEqual(num, m[i, j], msg)
+
 
 if __name__ == '__main__':
     unittest.main()
