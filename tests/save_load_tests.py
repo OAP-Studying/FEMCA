@@ -321,3 +321,167 @@ class TestSaveLoad(unittest.TestCase):
         # Закрываем открытые файлы
         cont1.close()
         cont2.close()
+
+    def test_random_model(self):
+        """Тестирование рандомной конструкции"""
+        # Модуль Юнга
+        E = 1
+        # Площадь поперечного сечения
+        A = 1
+        # Длина элемента
+        L = 1
+        # Жёсткость пружинки
+        C = 1
+        # Точечное усилие в конструкции
+        F = 1
+        # нагрузки в распределёнке
+        q1 = 1
+        q2 = 1
+
+        # Заготовка конструкции
+        ls1 = LineStructure()
+
+        # рандомно выбираем с чего начинаем конструкцию стержень или пружинка
+        answer = random.choice(['rod', 'spring'])
+        if answer == 'rod':
+            # Коэффициенты констант
+            Ek = random.randint(1, 4)
+            Ak = random.randint(1, 4)
+            Lk = random.randint(1, 2)
+            ls1.add_rod(E * Ek, A * Ak, D=Distance(L * Lk))
+        else:
+            # Коэффициенты констант
+            Ck = random.randint(1, 5)
+            Lk = random.randint(1, 2)
+            ls1.add_spring(C * Ck, D=Distance(L * Lk))
+
+        # Дальше добавляем от 2 до 4 элементов рандомно
+        for _ in range(random.randint(2, 4)):
+            # Получаем последний элемент из массива элементов
+            el = ls1.items[-1]
+            # рандомно выбираем что добавляем стержень или пружину
+            answer = random.choice(['rod', 'spring'])
+            if answer == 'rod':
+                # Коэффициенты констант
+                Ek = random.randint(1, 4)
+                Ak = random.randint(1, 4)
+                Lk = random.randint(1, 2)
+                # Начальный узел элемента - это последний узел в конструкции
+                n1 = el.n2
+                ls1.add_rod(E * Ek, A * Ak, n1=n1, D=Distance(L * Lk))
+            else:
+                # Коэффициенты констант
+                Ck = random.randint(1, 5)
+                Lk = random.randint(1, 2)
+                # Начальный узел элемента - это последний узел в конструкции
+                n1 = el.n2
+                ls1.add_spring(C * Ck, n1=n1, D=Distance(L * Lk))
+
+        # Добавялем заделки в начало и в конец конструкции
+        ls1.items[0].n1.add_pinning()
+        ls1.items[-1].n2.add_pinning()
+
+        # Добавялем нагрузки к узлам элементов
+        # Получаем все узлы где нет заделок
+        grid = []
+        for node in ls1.grid:
+            # Если в узле нет заделки добавляем его
+            if not (node.u == 0 and node.v == 0):
+                grid.append(node)
+
+        # Теперь выбираем рандомные два элемента из списка узлов
+        # сначала перемешиваем этот массив узлов
+        random.shuffle(grid)
+        # Получаем два узла
+        n1 = grid.pop(0)
+        n2 = grid.pop(0)
+
+        # В них добавляем рандомные силы
+        ls1.add_point_force(n1, Force(F * random.randint(-2, 4)))
+        ls1.add_point_force(n2, Force(F * random.randint(-2, 4)))
+
+        # Выбираем сколько раз будем накладывать на конструкцию распределёнку
+        # от одного до двух раз
+        for _ in range(random.randint(1, 2)):
+            # Выбираем рандомный элемент из конструкции
+            el = random.choice(ls1.items)
+            # Коэффициенты при нагрузках
+            q1k = random.randint(-1, 2)
+            q2k = random.randint(-1, 2)
+            el.add_linear_distributed_force(Force(q1 * q1k), Force(q2 * q2k))
+
+        # Сохраняем файл нашей модели
+        save_model(ls1, self.f_model1)
+
+        # Загружаем конструкцию из файла
+        ls2 = load_model(self.f_model1)
+        # Сохраняем загруженую модель
+        save_model(ls2, self.f_model2)
+
+        # Полученные два файла должны быть одинаковыми
+        # То есть все строки должны быть одинаковыми
+        cont1 = open(self.f_model1)
+        cont2 = open(self.f_model2)
+
+        # Первая проверка, построчно проверяем файлы
+        # Считываем за раз строку из первого файла
+        i = 0
+        for line1 in cont1:
+            # Считываем также строку и из второго файла
+            line2 = cont2.readline()
+            i += 1
+            msg = f'[строка {i}] Файлы моделей должны быть одинаковыми'
+            self.assertEqual(line1, line2, msg)
+
+        # Закрываем открытые файлы
+        cont1.close()
+        cont2.close()
+
+        # Начинаем расчёты
+        # Отдельные объекты для расчёта конструкции
+        comp1 = FEMComput(ls1)
+        comТо
+        есть
+        все
+        строки
+        должны
+        быть
+        одинаковыми
+        cont1 = open(self.f_res1)
+        cont2 = open(self.f_res2)
+
+        # ВТОРАЯ проверка, построчно проверяем файлы
+        # Считываем за раз строку из первого файла
+        i = 0
+        for line1 in cont1:
+            # Считываем также строку и из второго файла
+            line2 = cont2.readline()
+            i += 1
+            msg = f'[строка {i}] Файлы результатов должны быть одинаковыми'
+            self.assertEqual(line1, line2, msg)
+
+        # Закрываем открытые файлы
+        cont1.close()
+        cont2.close()
+        # Полученные два файла должны быть одинаковыми
+        # То есть все строки должны быть одинаковыми
+        cont1 = open(self.f_res1)
+        cont2 = open(self.f_res2)
+
+        # ВТОРАЯ проверка, построчно проверяем файлы
+        # Считываем за раз строку из первого файла
+        i = 0
+        for line1 in cont1:
+            # Считываем также строку и из второго файла
+            line2 = cont2.readline()
+            i += 1
+            msg = f'[строка {i}] Файлы результатов должны быть одинаковыми'
+            self.assertEqual(line1, line2, msg)
+
+        # Закрываем открытые файлы
+        cont1.close()
+        cont2.close()
+
+
+if __name__ == '__main__':
+    unittest.main()
