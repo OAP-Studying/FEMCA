@@ -196,6 +196,17 @@ class TestMatrixOperations(unittest.TestCase):
         msg = f"\n{m[0]} НЕ РАВНО {row}"
         self.assertTrue(m[0] == row, msg)
 
+    def test_get_col_elemet(self):
+        """Тест на получение элемента матрицы столбца"""
+        # Элемент столбца можно получить:
+        # либо через одну скобку [i, j]
+        # Через одну скобку с одним индексом [k] - если это строка или столбец
+        col = Matrix([1, 2, 3, 4])
+        # Проверка полученеие элемента
+        for i in range(col.rows):
+            msg = f'\n{col}col[{i}]={col[i]} не равен col[{i}, 0]={col[i, 0]}'
+            self.assertEqual(col[i], col[i, 0], msg)
+
 
 if __name__ == '__main__':
     unittest.main()
